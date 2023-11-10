@@ -15,7 +15,7 @@
             <v-text-field label="Filme" variant="outlined"></v-text-field>
           </v-col>
           <v-col cols="12" class="text-right">
-            <v-btn class="bg-primary">Adicionar</v-btn>
+            <v-btn class="bg-blue">Adicionar</v-btn>
           </v-col>
         </v-rol>
         <v-row>
@@ -39,16 +39,28 @@
     </row>
 
     <tbody>
+      <v-field class="text-center">
       <tr>
-        <td class="text-left" style="width: 85%">NomeFilme</td>
-        <td class="text-right">
-          <v-select label="Select" :items="['aguardando', 'assistindo', 'finalizado']" variant="outlined">
+        <td class="text-left" style="width: 85%">
+          NomeFilme
+        </td>
+        <td class="text-center" style="width:50%;">
+          <v-select 
+            label="Select" 
+              :items="['aguardando', 'assistindo', 'finalizado']" 
+              variant="outlined">
           </v-select>
         </td>
       </tr>
+    </v-field>
     </tbody>
-
-    <v-select label="Estilo" :items="['Acao', 'Animacao', 'Ficcao']" variant="outlined">
+ 
+    <v-select 
+      v-model="estilofilme"  
+          :items="['Acao', 'Animacao', 'Ficcao']"
+          label="Estilo"
+          multiple
+          variant="outlined">
     </v-select>
 
     
@@ -72,6 +84,8 @@ export default {
   },
 
   data: () => ({
+    //items: ['Acao', 'Animacao', 'Ficcao'],
+    estilofilme: ['Acao', 'Animacao', 'Ficcao'],
     //
   }),
 }
