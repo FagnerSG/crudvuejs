@@ -6,75 +6,90 @@
       </div>
     </v-app-bar>
 
-  <v-container>  
-    <v-row class="text-center">
-      <v-spacer>
-      <v-col offset-lg="3" lg="6" md="12">
-        <v-rol>
-          <v-col cols="10">
-            <v-text-field label="Filme" variant="outlined"></v-text-field>
-          </v-col>
-          <v-col cols="12" class="text-right">
-            <v-btn class="bg-blue">Adicionar</v-btn>
-          </v-col>
-        </v-rol>
-        <v-row>
-
-        </v-row>
-      </v-col>
-    </v-spacer>
+  <v-container>   
+    <v-row >
+      <v-rol>
+        <v-col cols="12" md="6">
+          <v-text-field v-model="filmeNome" label="Filme" variant="outlined"></v-text-field>
+        </v-col>
+      </v-rol>  
+      <v-rol>
+        <v-col cols="12" md="4" class="text-right">
+          <v-btn @click="adicionaFilme" class="bg-blue">Adicionar</v-btn>
+        </v-col>
+      </v-rol>
+    </v-row>
+    
+    <v-row >
+      <v-rol>
+        <v-col offset-lg="2" lg="8" md="10">
+          <v-table>
+            <thead>
+              <tr>
+                <th class="text-center">Filmes</th>
+              </tr>
+            </thead>
+          </v-table>      
+        </v-col>
+      </v-rol>
     </v-row>
 
-    <row class="text-center">
-      <v-col offset-lg="2" lg="8" md="12">
-        <v-table>
-          <thead>
-            <tr>
-              <th class="text-left" style="width: 60%">Filme</th>
-              <th class="text-right"> </th>
-            </tr>
-          </thead>
-        </v-table>
-      </v-col>
-    </row>
-
-    <tbody>
-      <v-field class="text-center">
-      <tr>
-        <td class="text-left" style="width: 85%">
-          NomeFilme
-        </td>
-        <td class="text-center" style="width:50%;">
+   <v-table class="bg-green">     
+      <v-field>
+        <v-row >
+          <v-col cols="12" md="6">
+            <v-textarea
+              v-for="(filmeNome, indice) in listaFilmes" :key="indice" v-model="entradaFilme" label="NomeFilme" variant="outlined" rows="1">
+            </v-textarea>
+          </v-col>
+        </v-row>
+        <v-col>   
           <v-select 
-            label="Select" 
-              :items="['aguardando', 'assistindo', 'finalizado']" 
-              variant="outlined">
-          </v-select>
-        </td>
-      </tr>
-    </v-field>
-    </tbody>
- 
-    <v-select 
-      v-model="estilofilme"  
-          :items="['Acao', 'Animacao', 'Ficcao']"
-          label="Estilo"
-          multiple
-          variant="outlined">
-    </v-select>
+            v-for="(indice) in listaFilmes" 
+            :key="indice" 
+            v-model="estiloFilme" 
+            :items="['Acao', 'Animacao', 'Ficcao']" l
+            abel="Estilo" 
+            multiple 
+            variant="outlined">
+          </v-select>      
+        </v-col>
+      </v-field>
 
-    
+      <v-field>
+        <v-row>
+          <v-rol>
+            <v-col>
+              <v-select 
+                label="Select"
+                  :value="selecao" 
+                  :items="['aguardando', 'assistindo', 'finalizado']" 
+                  variant="outlined">
+              </v-select>
+            </v-col>
+            <v-col>
+              <td>
+              <v-btn @click="excluir" class="bg-red">Excluir</v-btn>
+            </td>  
+            </v-col>
+          </v-rol>
+        </v-row>
+      </v-field>
+    </v-table>
   </v-container>
     
     <v-main>
       <FormularioFilme/>
-
     </v-main>
   </v-app>
 </template>
 
 <script>
 import FormularioFilme from './components/FormularioFilme.vue'
+import App from './App.vue'
+import { createApp } from 'vue'
+
+createApp(App) 
 export default {
   name: 'App',
 
@@ -83,12 +98,29 @@ export default {
     FormularioFilme
   },
 
-  data: () => ({
-    //items: ['Acao', 'Animacao', 'Ficcao'],
-    estilofilme: ['Acao', 'Animacao', 'Ficcao'],
-    //
+  data: () => ({ 
+    filmes: {
+      filmeNome: '',
+      entradaFilme: '',
+      estiloFilme:[''],
+    },
+    estiloFilme: ['Acao', 'Animacao', 'Ficcao'], 
+    listaFilmes: [],
   }),
+
+  methods: {
+     adicionaFilme(){
+      this.entradaFilme += this.filmeNome + '';
+      this.listaFilmes.push(this.filmeNome);
+      this.filmeNome = '';
+    },
+    adicionarEstilo(){
+      this.estilofilme =[];
+      this.estilofilme += this.entradafilme;
+    },
+  }
 }
+
 </script>
 
 <style>
