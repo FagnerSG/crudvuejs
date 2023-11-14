@@ -8,13 +8,13 @@
 
   <v-container>   
     <v-row >
+      <v-field>
+        <v-col cols="12" md="6">
+          <v-text-field v-model="filmeNome" label="Filme" variant="solo-filled"></v-text-field>
+        </v-col>
+      </v-field>  
       <v-rol>
         <v-col cols="12" md="6">
-          <v-text-field v-model="filmeNome" label="Filme" variant="outlined"></v-text-field>
-        </v-col>
-      </v-rol>  
-      <v-rol>
-        <v-col cols="12" md="4" class="text-right">
           <v-btn @click="adicionaFilme" class="bg-blue">Adicionar</v-btn>
         </v-col>
       </v-rol>
@@ -22,62 +22,67 @@
     
     <v-row >
       <v-rol>
-        <v-col offset-lg="2" lg="8" md="10">
+        <v-col offset-lg="2" lg="8" md="6">
           <v-table>
-            <thead>
-              <tr>
-                <th class="text-center">Filmes</th>
-              </tr>
+            <thead>           
+                <th class="text-center">Lista de Filmes </th>           
             </thead>
           </v-table>      
         </v-col>
       </v-rol>
     </v-row>
 
-   <v-table class="bg-green">     
-      <v-field>
-        <v-row >
-          <v-col cols="12" md="6">
-            <v-textarea
-              v-for="(filmeNome, indice) in listaFilmes" :key="indice" v-model="entradaFilme" label="NomeFilme" variant="outlined" rows="1">
-            </v-textarea>
+   
+   <v-table class="bg-green">
+    <div>     
+      <v-field >
+        <v-row align="start" no-gutters>
+          <v-col cols="12" md="6">          
+            <v-text-field
+              v-for="(filmeNome, index) in listaFilmes" 
+              :key="index" 
+              v-model="entradaFilme" 
+              label="NomeFilme" 
+              variant="outlined"
+              >
+            </v-text-field>         
           </v-col>
         </v-row>
         <v-col>   
-          <v-select 
-            v-for="(indice) in listaFilmes" 
-            :key="indice" 
-            v-model="estiloFilme" 
-            :items="['Acao', 'Animacao', 'Ficcao']" l
-            abel="Estilo" 
+          <v-select  
+            v-model="estiloFilme"
+            :value="selecao"
+            :items="['Acao', 'Animacao', 'Ficcao']" 
+            label="Estilo" 
             multiple 
+            chips
             variant="outlined">
           </v-select>      
         </v-col>
       </v-field>
+    </div>
 
       <v-field>
-        <v-row>
-          <v-rol>
+        <v-row>         
             <v-col>
               <v-select 
-                label="Select"
-                  :value="selecao" 
-                  :items="['aguardando', 'assistindo', 'finalizado']" 
-                  variant="outlined">
+                v-model="filmes.status"
+                label="Status"
+                :value="selecao" 
+                :items="['aguardando', 'assistindo', 'finalizado']" 
+                variant="outlined">
               </v-select>
             </v-col>
             <v-col>
               <td>
-              <v-btn @click="excluir" class="bg-red">Excluir</v-btn>
-            </td>  
+                <v-btn @click="excluirFilme" class="bg-red">Excluir</v-btn>
+              </td>  
             </v-col>
-          </v-rol>
         </v-row>
       </v-field>
     </v-table>
   </v-container>
-    
+
     <v-main>
       <FormularioFilme/>
     </v-main>
@@ -94,33 +99,44 @@ export default {
   name: 'App',
 
   components: {
-    //HelloWorld,
     FormularioFilme
   },
 
-  data: () => ({ 
+  data: () => ({
     filmes: {
       filmeNome: '',
       entradaFilme: '',
-      estiloFilme:[''],
+      estiloFilme: [],
+      listaFilmes: [''],
+      excluirFilme: '',
     },
-    estiloFilme: ['Acao', 'Animacao', 'Ficcao'], 
-    listaFilmes: [],
+    
+    listaFilmes:[],
+    estiloFilme: '',
+    entradaFilme: '',
+    value: ['acao', 'animacao', 'ficcao'],
   }),
 
   methods: {
-     adicionaFilme(){
-      this.entradaFilme += this.filmeNome + '';
-      this.listaFilmes.push(this.filmeNome);
-      this.filmeNome = '';
+    adicionaFilme(){
+      this.entradaFilme = this.filmeNome + '';
+      this.listaFilmes.push(this.filmeNome);   
     },
+
     adicionarEstilo(){
-      this.estilofilme =[];
-      this.estilofilme += this.entradafilme;
+      this.estilofilme = [];
+      this.estilofilme += this.filmes;
+    },
+
+    excluirFilme(filmes) {
+      const index = this.filmes.indexOf(filmes)
+      if (index !== -1){
+        this.filmes.splice(index, 1);
+      }
     },
   }
-}
 
+}
 </script>
 
 <style>
