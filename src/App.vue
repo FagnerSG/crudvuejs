@@ -1,20 +1,41 @@
 <template>
   <v-app id="inspire">
+    <v-app-bar color="#607D8B">
+      <v-app-bar-nav-icon
+        app
+        color="#006064"
+        :elevation="10"
+      ></v-app-bar-nav-icon>
+      <div class="text-center">
+        <h1>FILMES</h1>
+      </div>
 
-     <v-app-bar color="#607D8B">
-        <v-app-bar-nav-icon app color="#006064" :elevation="10"></v-app-bar-nav-icon>
-          <div class="text-center">
-            <h1>FILMES</h1>
-          </div>
+      <v-spacer></v-spacer>
 
-          <v-spacer></v-spacer>
+      <v-app-bar-title></v-app-bar-title>
+    </v-app-bar>
+
+    <v-container class="bg-blue-grey-lighten-4 pa-12">
+      <v-row>
+        <v-col>
           <!--inicio do campo para consulta-->
           <div>
-            <v-btn v-if="!mostrarCampoConsulta" @click="botaoConsultarFilme" class="bg-blue-grey-lighten-4"><svg-icon type="mdi" :path="buscaIconFilme"></svg-icon></v-btn>
+            <v-btn
+              v-if="!mostrarCampoConsulta"
+              @click="botaoConsultarFilme"
+              class="bg-blue-grey-lighten-4"
+              ><svg-icon type="mdi" :path="buscaIconFilme"></svg-icon
+            ></v-btn>
           </div>
           <div v-if="mostrarCampoConsulta">
-            <input v-model="buscarFilme" placeholder="Digite o nome do filme" class="bg-blue-grey-lighten-4">
-            <v-btn @click="consultarFilme" class="bg-blue-grey-lighten-4"><svg-icon type="mdi" :path="buscaIconFilme"></svg-icon></v-btn>
+            <input
+              v-model="buscarFilme"
+              placeholder="Digite o nome do filme"
+              class="bg-blue-grey-lighten-4"
+            />
+            <v-btn @click="consultarFilme" class="bg-blue-grey-lighten-4"
+              ><svg-icon type="mdi" :path="buscaIconFilme"></svg-icon
+            ></v-btn>
           </div>
 
           <!-- Resultados da consulta -->
@@ -32,10 +53,8 @@
             <p>Nenhum resultado encontrado para "{{ buscarFilme }}"</p>
           </div>
           <!--fim do campo para consulta-->
-        <v-app-bar-title></v-app-bar-title>
-      </v-app-bar>
-
-    <v-container class="bg-blue-grey-lighten-4 pa-12" >
+        </v-col>
+      </v-row>
       <v-row>
         <v-col cols="12" md="2">
           <v-text-field
@@ -54,7 +73,8 @@
             label="Estilo"
             multiple
             chips
-            variant="outlined">
+            variant="outlined"
+          >
           </v-select>
         </v-col>
 
@@ -64,16 +84,19 @@
             label="Status"
             :value="selecao"
             :items="['aguardando', 'assistindo', 'finalizado']"
-            variant="outlined">
+            variant="outlined"
+          >
           </v-select>
         </v-col>
 
         <v-col cols="12" md="6">
-          <v-btn @click="adicionaFilme" class="bg-blue">Adicionar<svg-icon type="mdi" :path="addIcon"></svg-icon></v-btn>
+          <v-btn @click="adicionaFilme" class="bg-blue"
+            >Adicionar<svg-icon type="mdi" :path="addIcon"></svg-icon
+          ></v-btn>
         </v-col>
       </v-row>
 
-      <v-row>       
+      <v-row>
         <v-col offset-lg="2" lg="8" md="6">
           <v-table>
             <thead>
@@ -92,39 +115,66 @@
           </tr>
         </thead>
 
-        <tbody v-for="(filme, index) in listaFilmes" :key="index" :id="'filme-' + index">          
-          <tr >
+        <tbody
+          v-for="(filme, index) in listaFilmes"
+          :key="index"
+          :id="'filme-' + index"
+        >
+          <tr>
             <td v-if="!filme.editando">{{ filme.nome }}</td>
-              <td v-else>
-                <input v-model="filmeEditando.nome" placeholder="Novo nome">
-              </td>
+            <td v-else>
+              <input v-model="filmeEditando.nome" placeholder="Novo nome" />
+            </td>
             <td v-if="!filme.editando">{{ filme.estilo }}</td>
-              <td v-else>
-                <v-select v-model="filmeEditando.estilo" placeholder="Novo estilo" :items="['Acao', 'Animacao', 'Ficcao']" label="Estilo" multiple chips outlined></v-select>
-              </td>
+            <td v-else>
+              <v-select
+                v-model="filmeEditando.estilo"
+                placeholder="Novo estilo"
+                :items="['Acao', 'Animacao', 'Ficcao']"
+                label="Estilo"
+                multiple
+                chips
+                outlined
+              ></v-select>
+            </td>
             <td v-if="!filme.editando">{{ filme.status }}</td>
-              <td v-else>
-                <v-select v-model="filmeEditando.status" placeholder="Novo status" :items="['aguardando', 'assistindo', 'finalizado']" label="Status" chips outlined></v-select>
-              </td>
+            <td v-else>
+              <v-select
+                v-model="filmeEditando.status"
+                placeholder="Novo status"
+                :items="['aguardando', 'assistindo', 'finalizado']"
+                label="Status"
+                chips
+                outlined
+              ></v-select>
+            </td>
             <!-- fim dos campos para edicao-->
-          
-              <v-row>
-                <v-col>
-                  <td>
-                    <v-col cols="12" md="6">
-                      <v-btn v-if="!filme.editando" @click="editarFilme(index)" class="bg-green"><svg-icon type="mdi" :path="editarIcon"></svg-icon></v-btn>
-                      <v-btn v-else @click="salvarEdicao(index)" class="bg-blue"><svg-icon type="mdi" :path="saveEditIcon"></svg-icon></v-btn>
-                    </v-col>
-                  </td>               
-                  <td>
-                    <v-col cols="12" md="6">
-                      <v-btn @click="excluirFilme(index)" class="bg-red"><svg-icon type="mdi" :path="excluirIcon"></svg-icon></v-btn>
-                    </v-col>
-                  </td>
-                </v-col>
-            </v-row>          
-          
-          </tr>         
+
+            <v-row>
+              <v-col>
+                <td>
+                  <v-col cols="12" md="6">
+                    <v-btn
+                      v-if="!filme.editando"
+                      @click="editarFilme(index)"
+                      class="bg-green"
+                      ><svg-icon type="mdi" :path="editarIcon"></svg-icon
+                    ></v-btn>
+                    <v-btn v-else @click="salvarEdicao(index)" class="bg-blue"
+                      ><svg-icon type="mdi" :path="saveEditIcon"></svg-icon
+                    ></v-btn>
+                  </v-col>
+                </td>
+                <td>
+                  <v-col cols="12" md="6">
+                    <v-btn @click="excluirFilme(filme.id)" class="bg-red"
+                      ><svg-icon type="mdi" :path="excluirIcon"></svg-icon
+                    ></v-btn>
+                  </v-col>
+                </td>
+              </v-col>
+            </v-row>
+          </tr>
         </tbody>
       </v-table>
     </v-container>
@@ -136,21 +186,20 @@
 </template>
 
 <script setup>
-  import SvgIcon from '@jamescoyle/vue-icon';
-  import { mdiAccount } from '@mdi/js';
-  import { mdiDeleteForever } from '@mdi/js';
-  import { mdiTextBoxEdit } from '@mdi/js';
-  import { mdiContentSaveEditOutline } from '@mdi/js';
-  import { mdiCheckCircleOutline } from '@mdi/js';
-  import { mdiMagnify } from '@mdi/js';
-
+import SvgIcon from "@jamescoyle/vue-icon";
+import { mdiAccount } from "@mdi/js";
+import { mdiDeleteForever } from "@mdi/js";
+import { mdiTextBoxEdit } from "@mdi/js";
+import { mdiContentSaveEditOutline } from "@mdi/js";
+import { mdiCheckCircleOutline } from "@mdi/js";
+import { mdiMagnify } from "@mdi/js";
 </script>
 
 <script>
 import FormularioFilme from "./components/FormularioFilme.vue";
 import App from "./App.vue";
-import { createApp } from "vue";
-//import { db } from "./dexiedb";
+import { createApp, toRaw } from "vue";
+import db from "@/database/db";
 //import { liveQuery } from "dexie";
 //import { useObservable } from "@vueuse/rxjs";
 
@@ -158,7 +207,7 @@ createApp(App);
 
 export default {
   name: "App",
-  
+
   components: {
     FormularioFilme,
     SvgIcon,
@@ -169,7 +218,6 @@ export default {
       nome: "",
       status: [],
       estilo: [],
-      id:"",
     },
 
     path: mdiAccount,
@@ -177,27 +225,49 @@ export default {
     editarIcon: mdiTextBoxEdit,
     saveEditIcon: mdiContentSaveEditOutline,
     addIcon: mdiCheckCircleOutline,
-    buscaIconFilme:mdiMagnify,
+    buscaIconFilme: mdiMagnify,
     listaFilmes: [],
-    buscarFilme: '',
+    buscarFilme: "",
     resultadoConsulta: [],
     mostrarCampoConsulta: false,
-
   }),
 
+  mounted() {
+    console.log("db");
+    console.log(db);
+    console.log(db.filmes);
+    this.getFilmes();
+  },
+
   methods: {
+    getFilmes() {
+      db.filmes.toArray().then((f) => {
+        console.log(f);
+        this.listaFilmes = f;
+        //this.listaFilmes.push(this.filme);
+      });
+    },
 
     adicionaFilme() {
-      this.listaFilmes.push(this.filme);
       console.log(this.listaFilmes);
-      this.filme = {
-        nome: "",
-        status: [],
-        estilo: [],
-        id: "",
-      };
+      console.log(toRaw(this.filme));
+      this.filme = toRaw(this.filme);
+      db.filmes
+        .add(toRaw(this.filme))
+        .then(() => {
+          console.log("Filme salvo no banco de dados Dexie");
+          this.getFilmes();
+        })
+        .catch((error) => {
+          console.error("Erro ao salvar filme:", error);
+        }),
+        (this.filme = {
+          nome: "",
+          status: [],
+          estilo: [],
+        });
     },
-    
+
     // adicao da funcao editarFilme
     editarFilme(index) {
       this.listaFilmes.forEach((filme, i) => {
@@ -206,7 +276,7 @@ export default {
           this.filmeEditando = {
             nome: filme.nome,
             status: filme.status,
-            estilo: filme.estilo
+            estilo: filme.estilo,
           };
         } else {
           filme.editando = false;
@@ -222,11 +292,12 @@ export default {
     // fim da funcao editarFilme
 
     //funcao para exclusao
-    excluirFilme(index) {
-      this.listaFilmes.splice(index, 1);
-      console.log("Filme removido");
-      console.log(this.filme);
-      },
+    excluirFilme(id) {
+      console.log(id);
+      db.filmes.delete(id).then(() => {
+        this.getFilmes();
+      })
+    },
     //fim da funcao exclusao
 
     //funcao consultar filme
@@ -239,9 +310,11 @@ export default {
     },
 
     consultarFilme() {
-      if (this.buscarFilme.trim() !== '') {
-        this.resultadoConsulta = this.listaFilmes.filter(filme => {
-          return filme.nome.toLowerCase().includes(this.buscarFilme.toLowerCase());
+      if (this.buscarFilme.trim() !== "") {
+        this.resultadoConsulta = this.listaFilmes.filter((filme) => {
+          return filme.nome
+            .toLowerCase()
+            .includes(this.buscarFilme.toLowerCase());
         });
       } else {
         this.resultadoConsulta = [];
@@ -251,11 +324,10 @@ export default {
     scrollParaItem(index) {
       const elemento = document.getElementById(`filme-${index}`);
       if (elemento) {
-        elemento.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        elemento.scrollIntoView({ behavior: "smooth", block: "start" });
       }
-    }
-
-  }
+    },
+  },
 };
 </script>
 
@@ -268,6 +340,5 @@ export default {
   text-align: center;
   color: #2c3e50;
   margin-top: 60px;
-  
 }
 </style>
