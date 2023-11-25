@@ -90,8 +90,14 @@
         </v-col>
 
         <v-col cols="12" md="6">
-          <v-btn @click="adicionaFilme" class="bg-blue"
+          <v-btn v-if="!filme.editando" @click="adicionaFilme" class="bg-blue"
             >Adicionar<svg-icon type="mdi" :path="addIcon"></svg-icon
+          ></v-btn>
+          <v-btn v-else @click="salvarEdicao()" class="bg-blue"
+            ><svg-icon type="mdi" :path="saveEditIcon"></svg-icon
+          ></v-btn>
+          <v-btn @click="cancelar" class="bg-orange"
+            >Cancelar<svg-icon type="mdi" :path="addIcon"></svg-icon
           ></v-btn>
         </v-col>
       </v-row>
@@ -121,59 +127,24 @@
           :id="'filme-' + index"
         >
           <tr>
-            <td v-if="!filme.editando">{{ filme.nome }}</td>
-            <td v-else>
-              <input v-model="filmeEditando.nome" placeholder="Novo nome" />
-            </td>
-            <td v-if="!filme.editando">{{ filme.estilo }}</td>
-            <td v-else>
-              <v-select
-                v-model="filmeEditando.estilo"
-                placeholder="Novo estilo"
-                :items="['Acao', 'Animacao', 'Ficcao']"
-                label="Estilo"
-                multiple
-                chips
-                outlined
-              ></v-select>
-            </td>
-            <td v-if="!filme.editando">{{ filme.status }}</td>
-            <td v-else>
-              <v-select
-                v-model="filmeEditando.status"
-                placeholder="Novo status"
-                :items="['aguardando', 'assistindo', 'finalizado']"
-                label="Status"
-                chips
-                outlined
-              ></v-select>
-            </td>
-            <!-- fim dos campos para edicao-->
+            <td>{{ filme.nome }}</td>
+            <td>{{ filme.estilo }}</td>
+            <td>{{ filme.status }}</td>
 
-            <v-row>
-              <v-col>
-                <td>
-                  <v-col cols="12" md="6">
-                    <v-btn
-                      v-if="!filme.editando"
-                      @click="editarFilme(index)"
-                      class="bg-green"
-                      ><svg-icon type="mdi" :path="editarIcon"></svg-icon
-                    ></v-btn>
-                    <v-btn v-else @click="salvarEdicao(index)" class="bg-blue"
-                      ><svg-icon type="mdi" :path="saveEditIcon"></svg-icon
-                    ></v-btn>
-                  </v-col>
-                </td>
-                <td>
-                  <v-col cols="12" md="6">
-                    <v-btn @click="excluirFilme(filme.id)" class="bg-red"
-                      ><svg-icon type="mdi" :path="excluirIcon"></svg-icon
-                    ></v-btn>
-                  </v-col>
-                </td>
+            <td>
+              <v-col cols="12" md="6">
+                <v-btn @click="editarFilme(filme.id)" class="bg-green"
+                  ><svg-icon type="mdi" :path="editarIcon"></svg-icon
+                ></v-btn>
               </v-col>
-            </v-row>
+            </td>
+            <td>
+              <v-col cols="12" md="6">
+                <v-btn @click="excluirFilme(filme.id)" class="bg-red"
+                  ><svg-icon type="mdi" :path="excluirIcon"></svg-icon
+                ></v-btn>
+              </v-col>
+            </td>
           </tr>
         </tbody>
       </v-table>
@@ -248,6 +219,14 @@ export default {
       });
     },
 
+    cancelar() {
+      this.filme = {
+        nome: "",
+        status: [],
+        estilo: [],
+      };
+    },
+
     adicionaFilme() {
       console.log(this.listaFilmes);
       console.log(toRaw(this.filme));
@@ -269,9 +248,11 @@ export default {
     },
 
     // adicao da funcao editarFilme
-    editarFilme(index) {
-      this.listaFilmes.forEach((filme, i) => {
-        if (i === index) {
+    async editarFilme(id) {
+      this.filme = await db.filmes.get(id);
+      this.filme.editando = true;
+      /*this.listaFilmes.forEach((filme) => {
+        if (id) {
           filme.editando = true;
           this.filmeEditando = {
             nome: filme.nome,
@@ -281,13 +262,17 @@ export default {
         } else {
           filme.editando = false;
         }
-      });
+      })*/
     },
-    salvarEdicao(index) {
-      this.listaFilmes[index].nome = this.filmeEditando.nome;
-      this.listaFilmes[index].status = this.filmeEditando.status;
-      this.listaFilmes[index].estilo = this.filmeEditando.estilo;
-      this.listaFilmes[index].editando = false;
+    async salvarEdicao() {
+      /*this.listaFilmes[id].nome = this.filmeEditando.nome;
+      this.listaFilmes[id].status = this.filmeEditando.status;
+      this.listaFilmes[id].estilo = this.filmeEditando.estilo;
+      this.listaFilmes[id].editando = false;*/
+
+      db.filmes.update(this.filme.id, toRaw(this.filme)).then(() => {
+        this.getFilmes();
+      });
     },
     // fim da funcao editarFilme
 
@@ -296,7 +281,7 @@ export default {
       console.log(id);
       db.filmes.delete(id).then(() => {
         this.getFilmes();
-      })
+      });
     },
     //fim da funcao exclusao
 
